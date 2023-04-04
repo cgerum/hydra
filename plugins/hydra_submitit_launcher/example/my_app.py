@@ -14,6 +14,10 @@ log = logging.getLogger(__name__)
 def my_app(cfg: DictConfig) -> None:
     env = submitit.JobEnvironment()
     log.info(f"Process ID {os.getpid()} executing task {cfg.task}, with {env}")
+    
+    if cfg.get("error", False): 
+        raise Exception("task is bigger than 4")
+    
     time.sleep(1)
 
 

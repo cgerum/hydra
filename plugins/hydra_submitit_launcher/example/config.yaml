@@ -1,4 +1,6 @@
 defaults:
-  - override hydra/launcher: submitit_slurm
+  - override hydra/launcher: submitit_local
 
 task: 1
+# Set to true to simlate error
+error: False

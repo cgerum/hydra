@@ -18,7 +18,8 @@ log = logging.getLogger(__name__)
 class BaseSubmititLauncher(Launcher):
     _EXECUTOR = "abstract"
 
-    def __init__(self, **params: Any) -> None:
+    def __init__(self, return_exceptions: bool = True, **params: Any) -> None:
+        self.return_exceptions = return_exceptions
         self.params = {}
         for k, v in params.items():
             if OmegaConf.is_config(v):
@@ -142,6 +143,9 @@ class BaseSubmititLauncher(Launcher):
             )
 
         jobs = executor.map_array(self, *zip(*job_params))
+        if self.return_exceptions:
+            return [j.exception() for j in jobs if j.exception() else j.result()]
+
         return [j.results()[0] for j in jobs]
 
 
