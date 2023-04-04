@@ -144,7 +144,13 @@ class BaseSubmititLauncher(Launcher):
 
         jobs = executor.map_array(self, *zip(*job_params))
         if self.return_exceptions:
-            return [j.exception() for j in jobs if j.exception() else j.result()]
+            def result_or_exception(j):
+                res = j.exception() 
+                if res is None:
+                    res = j.result()
+                return res
+            
+            return [result_or_exception(j) for j in jobs]
 
         return [j.results()[0] for j in jobs]
 
